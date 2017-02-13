@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ using System.Xml.Linq;
 
 class Program
 {
+    static string cDirectory;
+
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
         char[] delimiterchars = { ' ', '+' };
@@ -45,6 +48,10 @@ class Program
             e.Message.Delete(); //deleting command-message
             string message = String.Format("Your {0} score is {1}", charValueName,charValue);
             e.User.SendMessage(message); //sending user personal message with data
+        }
+        else if (e.Message.RawText.StartsWith("/console"))
+        {
+            e.User.SendMessage(cDirectory);
         }
         else if (e.Message.RawText.StartsWith("/r"))  //Roll Dem Dice
         {
@@ -151,6 +158,12 @@ class Program
 
     static void Main() //Main Program
     {
+        cDirectory = Directory.GetCurrentDirectory();
+        cDirectory = string.Format("{0}\\CharSheet.xml",cDirectory);
+
+        Console.WriteLine("CharSheet on: {0}", cDirectory);
+
+
         var bot = new Discord.DiscordClient();
                 
         bot.MessageReceived += bot_MessageReceived;
@@ -209,7 +222,7 @@ class Program
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
         
-        charSheet.Load(@"E:\Lan-Party\Discord\ConsoleApplication1\ConsoleApplication1\XMLFile1.xml");
+        charSheet.Load(cDirectory);
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/abilities/{1}", charName, charValueName);
@@ -239,7 +252,7 @@ class Program
     {
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
-        charSheet.Load(@"E:\Lan-Party\Discord\ConsoleApplication1\ConsoleApplication1\XMLFile1.xml");
+        charSheet.Load(cDirectory);
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/skills/{1}", charName, charValueName);
