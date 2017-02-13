@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<csheets>
+	<Noone>
+    <hp>
+      <maxhp>39</maxhp>
+      <currenthp>39</currenthp>
+      <surgevalue>9</surgevalue>
+      <surgesperday>8</surgesperday>
+      <surgeamount>8</surgeamount>
+    </hp>
+		<abilities>
+			<strength>10</strength>
+			<constitution>12</constitution>
+			<dexterity>21</dexterity>
+			<inteligence>8</inteligence>
+			<wisdom>14</wisdom>
+			<charisma>10</charisma>
+		</abilities>
+		<skills>
+			<strength>2</strength>
+			<constitution>3</constitution>
+			<dexterity>7</dexterity>
+			<inteligence>1</inteligence>
+			<wisdom>4</wisdom>
+			<charisma>2</charisma>
+			<acrobatics>12</acrobatics>
+			<arcana>1</arcana>
+			<athletics>2</athletics>
+			<bluff>2</bluff>
+			<diplomacy>2</diplomacy>
+			<dungeoneering>4</dungeoneering>
+			<endurance>8</endurance>
+			<heal>4</heal>
+			<history>1</history>
+			<insight>4</insight>
+			<intimidate>2</intimidate>
+			<nature>4</nature>
+			<perception>9</perception>
+			<religion>1</religion>
+			<stealth>12</stealth>
+			<streetwise>2</streetwise>
+			<thievery>7</thievery>
+		</skills>
+	</Noone>
+</csheets>	
