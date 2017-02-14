@@ -6,7 +6,7 @@ using DnDbot;
 
 class Program
 {
-    static string charSheetlocation = ".\\App_Data\\CharSheet.xml";
+    static string charSheetlocation = "%appdata%";
 
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
