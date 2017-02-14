@@ -125,7 +125,7 @@ class Program
         else if (e.Message.RawText.StartsWith("/hp")) //HP commands -personal
         {
             string[] command = e.Message.RawText.Split(delimiterchars);
-            if (command.Length == 1)
+            if (command.Length == 1) //the simple /hp command
             {
                 int?[] healthPoints = new int?[2];
                 healthPoints = charHp(e.User.Nickname);
@@ -143,12 +143,82 @@ class Program
                     e.User.SendMessage(hpSender);
                 }
             }
+            else if (command.Length == 4) //add or remove hp from player
+            {
+                string playerName = command[1];
+                string modifier = command[2];
+                string hpScore = command[3];
+                int hpModifier;
+
+                string succesmessage;
+
+                if (modifier == "add")
+                {
+                    try
+                    {
+                        hpModifier = Int32.Parse(hpScore);
+                        succesmessage = string.Format("{0} healt voor {1}", playerName, hpScore);
+                    }
+                    catch
+                    {
+                        string errorMessage = "U FUCKED UP, parse error"; //error parsing the abilityname
+                        e.User.SendMessage(e.User.Mention + errorMessage);
+                        return;
+                    }
+
+                }
+                else if (modifier == "del" || modifier == "delete")
+                {
+                    hpScore = string.Format("-{0}", hpScore);
+                    try
+                    {
+                        hpModifier = Int32.Parse(hpScore);
+                        succesmessage = string.Format("{0} neemt {1} damage", playerName, hpScore);
+                    }
+                    catch
+                    {
+                        string errorMessage = "U FUCKED UP, parse error"; //error parsing the abilityname
+                        e.User.SendMessage(e.User.Mention + errorMessage);
+                        return;
+                    }
+                }
+
+                else
+                {
+                    string errorMessage = "U FUCKED UP, command error"; //error parsing the command
+                    e.User.SendMessage(e.User.Mention + errorMessage);
+                    return;
+                }
+
+                bool succes;
+
+                succes = editCharHp(playerName, hpModifier);
+
+                if (succes == true)
+                {
+                    e.Channel.SendMessage(e.User.Mention + succesmessage);
+                    return;
+                }
+
+                else
+                {
+                    string errorMessage = "U FUCKED UP, editHp error"; //error parsing the abilityname
+                    e.User.SendMessage(errorMessage);
+                    return;
+                }
+
+            }
         }
        
     }
 
     static void Main() //Main Program
     {
+
+        XmlDocument charSheet = new XmlDocument();
+        charSheet.LoadXml(DnDbot.Properties.Resources.CharSheet);
+        charSheet.Save(@".\CharSheet.xml");
+
 
         var bot = new Discord.DiscordClient();
                 
@@ -162,16 +232,60 @@ class Program
 
     }
 
+    static bool editCharHp (string charName, int hpModifier)
+    {
+        bool succes;
+        int?[] currentHp = new int?[2];
+        int newHpValue;
+        string newHpValueString;
+
+        //get current and max HP
+        currentHp = charHp(charName);
+        if(currentHp[0] == null)
+        {
+            succes = false;
+            return succes;
+        }
+
+        //change it, and convert to string
+        if (currentHp[0] + hpModifier > currentHp[1])
+        {
+            newHpValue = currentHp[1] ?? default(int);
+        }
+        else
+        {
+            newHpValue = hpModifier + currentHp[0] ?? default(int);
+        }
+
+        newHpValueString = newHpValue.ToString();
+
+        //Laden van de XML-sheets
+        XmlDocument charSheet = new XmlDocument();
+        charSheet.Load(@".\CharSheet.xml");
+        string adress1 = string.Format("/csheets/{0}/hp/currenthp", charName);
+        //XmlNode charCurrentHp = charSheet.DocumentElement.SelectSingleNode(adress1);
+
+        charSheet.SelectSingleNode(adress1).InnerText = newHpValueString;
+
+        //Change value in XML-sheet
+        //charCurrentHp.Value = newHpValueString;
+        charSheet.Save(@".\CharSheet.xml");
+
+        succes = true;
+        return succes;
+
+    }
+
     static int?[] charHp(string charName)
     {
         int?[] charHp = new int?[2];
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
 
-        charSheet.Load(@"E:\Lan-Party\Discord\ConsoleApplication1\ConsoleApplication1\XMLFile1.xml");
+        charSheet.Load(@".\CharSheet.xml");
         
         //Verkrijgen van info uit de XML
-        string adress1 = String.Format("/csheets/{0}/hp/currenthp", charName);
+        string adress1 = String.Format(" / csheets/{0}/hp/currenthp", charName);
         string adress2 = String.Format("/csheets/{0}/hp/maxhp", charName);
         XmlNode charCurrentHp = charSheet.DocumentElement.SelectSingleNode(adress1);
         XmlNode charMaxHp = charSheet.DocumentElement.SelectSingleNode(adress2);
@@ -208,7 +322,7 @@ class Program
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
 
-        charSheet.LoadXml(DnDbot.Properties.Resources.CharSheet);
+        charSheet.Load(@".\CharSheet.xml");
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/abilities/{1}", charName, charValueName);
@@ -239,7 +353,7 @@ class Program
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
 
-        charSheet.LoadXml(DnDbot.Properties.Resources.CharSheet);
+        charSheet.Load(@".\CharSheet.xml");
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/skills/{1}", charName, charValueName);
