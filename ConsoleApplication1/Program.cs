@@ -210,8 +210,28 @@ class Program
 
             }
         }
+        else if (e.Message.RawText.StartsWith("/download")) //xml download
+        {
+            e.User.SendFile(charSheetlocation);
+            
+        }
+        else if (e.Message.RawText.StartsWith("/update"))
+        {
+            e.User.SendMessage("Old XML file:");
+            e.User.SendFile(charSheetlocation);
+
+            string xmlUrl = e.Message.Attachments[0].Url;
+            XmlDocument charSheet = new XmlDocument();
+            Console.WriteLine(xmlUrl);
+
+            charSheet.Load(xmlUrl);
+            charSheet.Save(charSheetlocation);
+            e.User.SendMessage("XML file updated");
+        }
        
     }
+
+
 
     static void Main() //Main Program
     {
