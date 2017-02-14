@@ -6,7 +6,8 @@ using DnDbot;
 
 class Program
 {
-    
+    static string charSheetlocation = ".\\app_data\\CharSheet.xml";
+
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
         char[] delimiterchars = { ' ', '+' };
@@ -214,10 +215,10 @@ class Program
 
     static void Main() //Main Program
     {
-
+        System.IO.Directory.CreateDirectory(@".\app_data");
         XmlDocument charSheet = new XmlDocument();
         charSheet.LoadXml(DnDbot.Properties.Resources.CharSheet);
-        charSheet.Save(@".\CharSheet.xml");
+        charSheet.Save(charSheetlocation);
 
 
         var bot = new Discord.DiscordClient();
@@ -261,7 +262,7 @@ class Program
 
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
-        charSheet.Load(@".\CharSheet.xml");
+        charSheet.Load(@charSheetlocation);
         string adress1 = string.Format("/csheets/{0}/hp/currenthp", charName);
         //XmlNode charCurrentHp = charSheet.DocumentElement.SelectSingleNode(adress1);
 
@@ -269,7 +270,7 @@ class Program
 
         //Change value in XML-sheet
         //charCurrentHp.Value = newHpValueString;
-        charSheet.Save(@".\CharSheet.xml");
+        charSheet.Save(@charSheetlocation);
 
         succes = true;
         return succes;
@@ -282,7 +283,7 @@ class Program
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
 
-        charSheet.Load(@".\CharSheet.xml");
+        charSheet.Load(@charSheetlocation);
         
         //Verkrijgen van info uit de XML
         string adress1 = String.Format(" / csheets/{0}/hp/currenthp", charName);
@@ -322,7 +323,7 @@ class Program
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
 
-        charSheet.Load(@".\CharSheet.xml");
+        charSheet.Load(@charSheetlocation);
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/abilities/{1}", charName, charValueName);
@@ -353,7 +354,7 @@ class Program
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
 
-        charSheet.Load(@".\CharSheet.xml");
+        charSheet.Load(@charSheetlocation);
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/skills/{1}", charName, charValueName);
