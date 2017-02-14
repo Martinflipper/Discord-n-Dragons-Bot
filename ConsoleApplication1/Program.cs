@@ -1,17 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Discord;
-using System.Xml.Linq;
+using DnDbot;
 
 class Program
 {
-    static string cDirectory;
-
+    
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
         char[] delimiterchars = { ' ', '+' };
@@ -48,10 +43,6 @@ class Program
             e.Message.Delete(); //deleting command-message
             string message = String.Format("Your {0} score is {1}", charValueName,charValue);
             e.User.SendMessage(message); //sending user personal message with data
-        }
-        else if (e.Message.RawText.StartsWith("/console"))
-        {
-            e.User.SendMessage(cDirectory);
         }
         else if (e.Message.RawText.StartsWith("/r"))  //Roll Dem Dice
         {
@@ -158,11 +149,6 @@ class Program
 
     static void Main() //Main Program
     {
-        cDirectory = Directory.GetCurrentDirectory();
-        cDirectory = string.Format("{0}\\CharSheet.xml",cDirectory);
-
-        Console.WriteLine("CharSheet on: {0}", cDirectory);
-
 
         var bot = new Discord.DiscordClient();
                 
@@ -221,8 +207,8 @@ class Program
     {
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
-        
-        charSheet.Load(cDirectory);
+
+        charSheet.LoadXml(DnDbot.Properties.Resources.CharSheet);
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/abilities/{1}", charName, charValueName);
@@ -252,7 +238,8 @@ class Program
     {
         //Laden van de XML-sheets
         XmlDocument charSheet = new XmlDocument();
-        charSheet.Load(cDirectory);
+
+        charSheet.LoadXml(DnDbot.Properties.Resources.CharSheet);
 
         //Verkrijgen van info uit de XML
         string adress = String.Format("/csheets/{0}/skills/{1}", charName, charValueName);
