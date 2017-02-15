@@ -284,9 +284,9 @@ class Program
                         calculator[i[4]] = command[1].Substring(i[1], (command[1].Length - i[1]));
                         Console.WriteLine(calculator[i[4]]);
                         i[4] = 0;
-                        i[5]++;
+                        
                     }
-
+                    i[5]++;
 
                 }
             }
