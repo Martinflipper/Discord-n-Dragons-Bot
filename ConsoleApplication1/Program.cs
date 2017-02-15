@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using System.Linq;
 using Discord;
 using DnDbot;
 
@@ -10,7 +11,7 @@ class Program
 
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
-        char[] delimiterchars = { ' ', '+' };
+        char[] delimiterchars = { ' ' };
 
         if (e.Message.RawText.StartsWith("/ability")) //Ability Commands -personal
         {    
@@ -45,7 +46,7 @@ class Program
             string message = String.Format("Your {0} score is {1}", charValueName,charValue);
             e.User.SendMessage(message); //sending user personal message with data
         }
-        else if (e.Message.RawText.StartsWith("/r"))  //Roll Dem Dice
+        else if (e.Message.RawText.StartsWith("/rold"))  //Roll Dem Dice ?obsolete?
         {
             string[] command = e.Message.RawText.Split(delimiterchars);
             string userName = e.User.Nickname;
@@ -215,7 +216,7 @@ class Program
             e.User.SendFile(charSheetlocation);
             
         }
-        else if (e.Message.RawText.StartsWith("/update"))
+        else if (e.Message.RawText.StartsWith("/update")) //xml updater
         {
             e.User.SendMessage("Old XML file:");
             e.User.SendFile(charSheetlocation);
@@ -229,6 +230,193 @@ class Program
             e.User.SendMessage("XML file updated");
         }
        
+        else if (e.Message.RawText.StartsWith("/r")) //Roll Dem Dice 2.0
+        {
+            Random rnd = new Random();
+            string[] command = e.Message.RawText.Split(delimiterchars);
+            string[] calculator = new string[30];
+            string userName = e.User.Nickname;
+            string skillName = " ";
+            int skValue = 0;
+
+            string output = " ";
+            string diceOutput = " ";
+            int addValue = 0;
+
+            //let's split the calculator
+            int[] i = { 0, 0, 0, 0, 1, 1 }; //indexer
+
+            if(command[1].Contains("+")|| command[1].Contains("-"))
+            {
+                while (i[4] != 0) //lelijkste code ooit, maar het werkt
+                {
+
+                    Console.WriteLine(i[5]);
+
+                    i[1] = command[1].IndexOf("+", i[0]);
+                    i[2] = command[1].IndexOf("-", i[0]);
+
+                    i[1] = GetSmallestNonNegative(i[1], i[2]);
+
+                    if (i[0] == 0)
+                    {
+                        calculator[0] = command[1].Substring(0, i[1]);
+                        Console.WriteLine(calculator[0]);
+                    }
+
+                    i[3] = i[1] + 1;
+
+                    i[0] = command[1].IndexOf("+", i[3]);
+                    i[2] = command[1].IndexOf("-", i[3]);
+
+                    i[0] = GetSmallestNonNegative(i[0], i[2]);
+
+                    i[3] = i[0] + 1;
+
+                    if (i[0] != 0)
+                    {
+                        calculator[i[4]] = command[1].Substring(i[1], (i[0] - i[1]));
+                        Console.WriteLine(calculator[i[4]]);
+                        i[4]++;
+                    }
+                    else
+                    {
+                        calculator[i[4]] = command[1].Substring(i[1], (command[1].Length - i[1]));
+                        Console.WriteLine(calculator[i[4]]);
+                        i[4] = 0;
+                        i[5]++;
+                    }
+
+
+                }
+            }
+            else
+            {
+                calculator[0] = command[1];
+            }
+
+            int ii = 0; //indexer2
+            int number = 0;
+
+            while (i[5] != ii)
+            {
+                Console.WriteLine("checking commandpart -{0}-", calculator[ii]);
+
+                if (calculator[ii].Any(char.IsDigit)&&calculator[ii].Contains("d")) //checks for dice
+                {
+                    Console.WriteLine("-{0}- is probably a dicer", calculator[ii]);
+                    diceOutput = diceOutput + calculator[ii];
+                    calculator[ii] = calculator[ii].TrimStart('+', '-');
+                    //let's split the dicer
+                    char dicerSplit = 'd';
+                    int diceAmount = 0;
+                    int diceValue = 0;
+                    string[] dicer = calculator[ii].Split(dicerSplit);
+
+                    Console.WriteLine("dicer.length={0} dicer[0]={1} dicer[1]={2}", dicer.Length, dicer[0], dicer[1]);
+
+                    if(dicer[0]=="")
+                    {
+                        try
+                        {
+                            diceAmount = 1;
+                            diceValue = Int32.Parse(dicer[1]);
+                        }
+                        catch
+                        {
+                            string errorMessage = "U FUCKED UP, parse error";
+                            e.User.SendMessage(errorMessage);
+                            return;
+                        }
+                    }
+
+                    else
+                    {
+                        try
+                        {
+                            diceAmount = Int32.Parse(dicer[0]);
+                            diceValue = Int32.Parse(dicer[1]);
+                        }
+                        catch
+                        {
+                            string errorMessage = "U FUCKED UP, parse error";
+                            e.User.SendMessage(errorMessage);
+                            return;
+                        }
+                    }
+                    
+
+                    while (diceAmount != 0)
+                    {
+                        int dice = rnd.Next(1, diceValue);
+                        addValue = addValue + dice;
+                        if (output == " ")
+                        {
+                            output = string.Format("({0})",dice);
+                            diceAmount = diceAmount - 1;
+                        }
+                        else
+                        {
+                            output = output + string.Format("+({0})", dice);
+                            diceAmount = diceAmount - 1;
+                        }
+                    }
+                    
+                }
+
+                if (int.TryParse(calculator[ii], out number)) //checks for integer value
+                {
+
+                    addValue = addValue + number;
+                    output = output + calculator[ii];
+
+                }
+
+                if (calculator[ii].Any(char.IsDigit) == false) //probably a skill check 'n add
+                {
+                    calculator[ii]=calculator[ii].TrimStart('+', '-');
+                    Console.WriteLine("skill after trim {0}", calculator[ii]);
+                    skillName = nameHandler(calculator[ii]);
+                    int? skillValue = charSkills(userName, skillName);
+                    if (skillValue == null)
+                    {
+                        string errorMessage = "U FUCKED UP, command error";
+                        e.User.SendMessage(e.User.Mention + errorMessage);
+                        return;
+                    }
+                    skValue = skillValue ?? default(int);
+                    addValue = addValue + skValue;
+
+                }
+
+                ii++;
+            }
+
+            string comment;
+
+            try
+            {
+                comment = command[2];
+            }
+            catch
+            {
+                comment = "";
+            }
+
+            if (skValue != 0)
+            {
+                output = output + string.Format("+{0}", skValue);
+            }
+
+            //final changes to output
+            output = string.Format("{0} = {1} = **{2}** `{3}` {4}", diceOutput, output, addValue, skillName, comment);
+
+            e.Channel.SendMessage(e.User.Mention + output);
+
+
+
+        }
+
     }
 
 
@@ -449,7 +637,6 @@ class Program
 
             return typeChecker;
         }
-
         else if (commandPart.StartsWith("#")) //checks for comment
         {
             typeChecker[1] = 1;
@@ -458,11 +645,9 @@ class Program
 
             return typeChecker;
         }
-
-        else if (commandPart.Length >= 3)
+        else //checks for ability check
         {
-
-            string fullName = nameHandler(commandPart); //checks for ability check
+            string fullName = nameHandler(commandPart); 
             if(fullName == "false")
             {
                 typeChecker[1] = 2;
@@ -477,17 +662,18 @@ class Program
             Console.WriteLine("Typechecker exec:{0}{1}", typeChecker[0], typeChecker[1]);
 
             return typeChecker;
-
-            
-
         }
+    }
 
-        typeChecker[1] = 4;
-
-        Console.WriteLine("Typechecker exec:{0}{1}", typeChecker[0], typeChecker[1]);
-
-        return typeChecker;
-
-
+    static int GetSmallestNonNegative(int a, int b)
+    {
+        if (a >= 0 && b >= 0)
+            return Math.Min(a, b);
+        else if (a >= 0 && b < 0)
+            return a;
+        else if (a < 0 && b >= 0)
+            return b;
+        else
+            return 0;
     }
 }
