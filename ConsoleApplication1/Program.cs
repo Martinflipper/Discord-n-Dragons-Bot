@@ -9,9 +9,19 @@ class Program
 {
     static string charSheetlocation = string.Format("{0}CharSheet.xml",Path.GetTempPath());
 
+
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
         char[] delimiterchars = { ' ' };
+        string userRole;
+        try
+        {
+            userRole = e.User.Roles.FirstOrDefault().ToString();
+        }
+        catch
+        {
+            userRole = "nothing";
+        }
 
         if (e.Message.RawText.StartsWith("/ability")) //Ability Commands -personal
         {    
@@ -23,7 +33,7 @@ class Program
             {
                 charName = e.User.Nickname;
             }
-            else if (command.Length == 3) //uses given charname as charname
+            else if (command.Length == 3 && userRole == "DM") //uses given charname as charname
             {
                 charName = command[2];
             }
@@ -46,84 +56,6 @@ class Program
             string message = String.Format("Your {0} score is {1}", charValueName,charValue);
             e.User.SendMessage(message); //sending user personal message with data
         }
-        else if (e.Message.RawText.StartsWith("/rold"))  //Roll Dem Dice ?obsolete?
-        {
-            string[] command = e.Message.RawText.Split(delimiterchars);
-            string userName = e.User.Nickname;
-            string comment = "";
-            int diceNumber;
-            int addValue = 0;
-
-            try
-            {
-                string str_diceNumber = command[1].Remove(0, 1);
-                diceNumber = Int32.Parse(str_diceNumber);
-            }
-            catch
-            {
-                string errorMessage = "U FUCKED UP, command error";
-                e.Channel.SendMessage(e.User.Mention + errorMessage);
-                return;
-            }
-
-            
-            if(command.Length > 2)
-            {
-                int i = 2; //indexer
-                
-                while(command.Length != i)
-                {
-                    int[] type = typeChecker(command[i], userName);
-
-                    addValue = addValue + type[0];
-
-                    if (type[1] == 1) //what to do with comment
-                    {
-                        char h = '#';
-                        command[i] = command[i].TrimStart(h);
-                        comment = comment + " " + command[i];
-                    }
-
-                    if (type[1] == 2)
-                    {
-                        string errorMessage = "U FUCKED UP, nameHandler error";
-                        e.Channel.SendMessage(e.User.Mention + errorMessage);
-                        return;
-                    }
-
-                    if(type[1] == 3)
-                    {
-                        string abilMention = nameHandler(command[i]);
-                        comment = comment + " " + abilMention;
-                    }
-
-                    i = i + 1;
-                }
-
-            }
-
-            // Create Random value
-            Random rnd = new Random();
-            int dice = rnd.Next(1, diceNumber);
-
-            // Calculate shit
-            int totalValue = dice + addValue;
-            string calculator = "";
-
-            if (addValue != 0)
-            {
-                calculator = String.Format(" + {0}",addValue);
-            }
-
-            if (comment != "")
-            {
-                comment = String.Format("`{0}`",comment);
-            }
-
-            //return Dice Value
-            string message = String.Format(" {0} = ({1}){2} = **{3}** {4}",command[1],dice,calculator,totalValue,comment); 
-            e.Channel.SendMessage(e.User.Mention + message);
-        }
         else if (e.Message.RawText.StartsWith("/hp")) //HP commands -personal
         {
             string[] command = e.Message.RawText.Split(delimiterchars);
@@ -145,7 +77,7 @@ class Program
                     e.User.SendMessage(hpSender);
                 }
             }
-            else if (command.Length == 4) //add or remove hp from player
+            else if (command.Length == 4 && userRole == "DM") //add or remove hp from player
             {
                 string playerName = command[1];
                 string modifier = command[2];
@@ -211,25 +143,6 @@ class Program
 
             }
         }
-        else if (e.Message.RawText.StartsWith("/download")) //xml download
-        {
-            OnProcessExit();
-            
-        }
-        else if (e.Message.RawText.StartsWith("/update")) //xml updater
-        {
-            e.User.SendMessage("Old XML file:");
-            e.User.SendFile(charSheetlocation);
-
-            string xmlUrl = e.Message.Attachments[0].Url;
-            XmlDocument charSheet = new XmlDocument();
-            Console.WriteLine(xmlUrl);
-
-            charSheet.Load(xmlUrl);
-            charSheet.Save(charSheetlocation);
-            e.User.SendMessage("XML file updated");
-        }
-       
         else if (e.Message.RawText.StartsWith("/r")) //Roll Dem Dice 2.0
         {
             Random rnd = new Random();
@@ -411,10 +324,35 @@ class Program
             //final changes to output
             output = string.Format("{0} = {1} = **{2}** `{3}` {4}", diceOutput, output, addValue, skillName, comment);
 
+            e.Message.Delete(); //deleting command-message
             e.Channel.SendMessage(e.User.Mention + output);
 
 
 
+        }
+        else if (userRole == "DM") //Admin commands
+        {
+            Console.WriteLine("User is DM");
+            if (e.Message.RawText.StartsWith("/download")) //xml download
+            {
+                e.Message.Delete(); //deleting command-message
+                e.User.SendFile(charSheetlocation);
+
+            }
+            else if (e.Message.RawText.StartsWith("/update")) //xml updater
+            {
+                e.Message.Delete(); //deleting command-message
+                e.User.SendMessage("Old XML file:");
+                e.User.SendFile(charSheetlocation);
+
+                string xmlUrl = e.Message.Attachments[0].Url;
+                XmlDocument charSheet = new XmlDocument();
+                Console.WriteLine(xmlUrl);
+
+                charSheet.Load(xmlUrl);
+                charSheet.Save(charSheetlocation);
+                e.User.SendMessage("XML file updated");
+            }
         }
 
     }
@@ -428,24 +366,16 @@ class Program
         charSheet.Save(charSheetlocation);
 
 
-        var bot = new Discord.DiscordClient();
-                
-        bot.MessageReceived += bot_MessageReceived;
 
+        var bot = new Discord.DiscordClient(); 
+        bot.MessageReceived += bot_MessageReceived;
         bot.ExecuteAndWait(async () =>
         {
             await bot.Connect("Mjc5MjkwNjgzMjY4MDA1ODg4.C4DXPg.31L5sU0R9yxYRWjDU0UQ8vE_1zQ", TokenType.Bot);
 
         });
-
-        
-
     }
-    static void OnProcessExit()
-    {
-        var bot = new Discord.DiscordClient();
-        bot.GetChannel(270630932233453585).GetUser(230792774935379969).SendFile(charSheetlocation);
-    }
+
 
     static bool editCharHp (string charName, int hpModifier)
     {
