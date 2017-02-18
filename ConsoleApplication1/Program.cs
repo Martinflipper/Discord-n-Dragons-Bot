@@ -213,7 +213,7 @@ class Program
         }
         else if (e.Message.RawText.StartsWith("/download")) //xml download
         {
-            e.User.SendFile(charSheetlocation);
+            OnProcessExit();
             
         }
         else if (e.Message.RawText.StartsWith("/update")) //xml updater
@@ -438,6 +438,13 @@ class Program
 
         });
 
+        
+
+    }
+    static void OnProcessExit()
+    {
+        var bot = new Discord.DiscordClient();
+        bot.GetChannel(270630932233453585).GetUser(230792774935379969).SendFile(charSheetlocation);
     }
 
     static bool editCharHp (string charName, int hpModifier)
@@ -676,4 +683,6 @@ class Program
         else
             return 0;
     }
+
+
 }

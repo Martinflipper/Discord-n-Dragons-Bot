@@ -61,27 +61,26 @@ namespace DnDbot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt; 
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;csheets&gt;
-        ///	&lt;Noone&gt;
-        ///		&lt;hp&gt;
-        ///			&lt;maxhp&gt;39&lt;/maxhp&gt;
-        ///			&lt;currenthp&gt;39&lt;/currenthp&gt;
-        ///			&lt;surgevalue&gt;9&lt;/surgevalue&gt;
-        ///			&lt;surgesperday&gt;8&lt;/surgesperday&gt;
-        ///			&lt;surgeamount&gt;8&lt;/surgeamount&gt;
-        ///		&lt;/hp&gt;
-        ///		&lt;abilities&gt;
-        ///			&lt;strength&gt;10&lt;/strength&gt;
-        ///			&lt;constitution&gt;12&lt;/constitution&gt;
-        ///			&lt;dexterity&gt;21&lt;/dexterity&gt;
-        ///			&lt;inteligence&gt;8&lt;/inteligence&gt;
-        ///			&lt;wisdom&gt;14&lt;/wisdom&gt;
-        ///			&lt;charisma&gt;10&lt;/charisma&gt;
-        ///		&lt;/abilities&gt;
-        ///		&lt;skills&gt;
-        ///			&lt;strength&gt;2&lt;/strength&gt;
-        ///			&lt;constitution&gt;3&lt;/constitution [rest of string was truncated]&quot;;.
+        ///  &lt;Noone&gt;
+        ///    &lt;hp&gt;
+        ///      &lt;maxhp&gt;39&lt;/maxhp&gt;
+        ///      &lt;currenthp&gt;39&lt;/currenthp&gt;
+        ///      &lt;surgevalue&gt;9&lt;/surgevalue&gt;
+        ///      &lt;surgesperday&gt;8&lt;/surgesperday&gt;
+        ///      &lt;surgeamount&gt;8&lt;/surgeamount&gt;
+        ///    &lt;/hp&gt;
+        ///    &lt;abilities&gt;
+        ///      &lt;strength&gt;10&lt;/strength&gt;
+        ///      &lt;constitution&gt;12&lt;/constitution&gt;
+        ///      &lt;dexterity&gt;21&lt;/dexterity&gt;
+        ///      &lt;inteligence&gt;8&lt;/inteligence&gt;
+        ///      &lt;wisdom&gt;14&lt;/wisdom&gt;
+        ///      &lt;charisma&gt;10&lt;/charisma&gt;
+        ///    &lt;/abilities&gt;
+        ///    &lt;skills&gt;
+        ///      &lt;strength&gt;2 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CharSheet {
             get {
