@@ -332,7 +332,7 @@ class Program
         }
         else if (userRole == "DM") //Admin commands
         {
-            Console.WriteLine("User is DM");
+
             if (e.Message.RawText.StartsWith("/download")) //xml download
             {
                 e.Message.Delete(); //deleting command-message
@@ -352,6 +352,18 @@ class Program
                 charSheet.Load(xmlUrl);
                 charSheet.Save(charSheetlocation);
                 e.User.SendMessage("XML file updated");
+            }
+            else if (e.Message.RawText.Contains("@")&&e.Channel.Name == "roleplay")
+            {
+                Console.WriteLine("Mentioner");
+                char[] delChars2 = { '@' };
+                char[] delChars = { '!', '>' };
+                string[] split1 = e.Message.RawText.Split(delChars2);
+                string[] split2 = split1[1].Split(delimiterchars);
+                split2[0] = split2[0].Trim(delChars);
+                Console.WriteLine("Mentioning {0}", split2[0]);
+                ulong toMention = ulong.Parse(split2[0]);
+                e.Server.GetUser(toMention).SendMessage("YOU HAVE BEEN SUMMONED BY THE DM");
             }
         }
 

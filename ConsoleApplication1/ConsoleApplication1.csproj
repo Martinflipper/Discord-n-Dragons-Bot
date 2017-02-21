@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CharSheet.xml" />
+    <None Include="Resources\charSheets.xml" />
     <None Include="Resources\CharSheet.xml" />
     <Content Include="XMLFile1.xml">
       <SubType>Designer</SubType>

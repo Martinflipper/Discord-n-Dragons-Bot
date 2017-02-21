@@ -80,7 +80,7 @@ namespace DnDbot.Properties {
         ///      &lt;charisma&gt;10&lt;/charisma&gt;
         ///    &lt;/abilities&gt;
         ///    &lt;skills&gt;
-        ///      &lt;strength&gt;2 [rest of string was truncated]&quot;;.
+        ///      &lt;strength&gt;0 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CharSheet {
             get {

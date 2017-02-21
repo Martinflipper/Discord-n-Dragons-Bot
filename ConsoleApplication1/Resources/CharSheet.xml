@@ -17,7 +17,7 @@
       <charisma>10</charisma>
     </abilities>
     <skills>
-      <strength>2</strength>
+      <strength>0</strength>
       <constitution>3</constitution>
       <dexterity>7</dexterity>
       <inteligence>1</inteligence>
@@ -45,7 +45,7 @@
   <Varrys>
     <hp>
       <maxhp>44</maxhp>
-      <currenthp>24</currenthp>
+      <currenthp>44</currenthp>
       <surgevalue>9</surgevalue>
       <surgesperday>8</surgesperday>
       <surgeamount>8</surgeamount>
@@ -59,12 +59,12 @@
       <charisma>8</charisma>
     </abilities>
     <skills>
-      <strength>2</strength>
-      <constitution>3</constitution>
-      <dexterity>7</dexterity>
-      <inteligence>2</inteligence>
-      <wisdom>6</wisdom>
-      <charisma>1</charisma>
+      <strength>0</strength>
+      <constitution>1</constitution>
+      <dexterity>5</dexterity>
+      <inteligence>0</inteligence>
+      <wisdom>4</wisdom>
+      <charisma>-1</charisma>
       <acrobatics>12</acrobatics>
       <arcana>2</arcana>
       <athletics>7</athletics>
@@ -87,10 +87,10 @@
   <Evelyn>
     <hp>
       <maxhp>48</maxhp>
-      <currenthp>31</currenthp>
-      <surgevalue>9</surgevalue>
-      <surgesperday>8</surgesperday>
-      <surgeamount>8</surgeamount>
+      <currenthp>48</currenthp>
+      <surgevalue>12</surgevalue>
+      <surgesperday>11</surgesperday>
+      <surgeamount>11</surgeamount>
     </hp>
     <abilities>
       <strength>13</strength>
