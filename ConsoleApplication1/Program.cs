@@ -261,7 +261,7 @@ class Program
 
                     while (diceAmount != 0)
                     {
-                        int dice = rnd.Next(1, diceValue);
+                        int dice = rnd.Next(1, (diceValue + 1));
                         addValue = addValue + dice;
                         if (output == " ")
                         {
