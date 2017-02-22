@@ -355,7 +355,7 @@ class Program
                 charSheet.Save(charSheetlocation);
                 e.User.SendMessage("XML file updated");
             }
-            else if (e.Message.RawText.Contains("@")&&e.Channel.Name == "general")
+            else if (e.Message.RawText.Contains("@")&&e.Channel.Name == "roleplay")
             {
                 Console.WriteLine("Mentioner");
                 char[] delChars2 = { '@' };
