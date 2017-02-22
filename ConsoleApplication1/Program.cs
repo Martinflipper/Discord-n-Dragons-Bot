@@ -8,10 +8,12 @@ using DnDbot;
 class Program
 {
     static string charSheetlocation = string.Format("{0}CharSheet.xml",Path.GetTempPath());
-
+    static string turnOf = "zer0";
 
     static void bot_MessageReceived(object sender, Discord.MessageEventArgs e) //Commands
     {
+  
+
         char[] delimiterchars = { ' ' };
         string userRole;
         try
@@ -353,7 +355,7 @@ class Program
                 charSheet.Save(charSheetlocation);
                 e.User.SendMessage("XML file updated");
             }
-            else if (e.Message.RawText.Contains("@")&&e.Channel.Name == "roleplay")
+            else if (e.Message.RawText.Contains("@")&&e.Channel.Name == "general")
             {
                 Console.WriteLine("Mentioner");
                 char[] delChars2 = { '@' };
@@ -364,12 +366,13 @@ class Program
                 Console.WriteLine("Mentioning {0}", split2[0]);
                 ulong toMention = ulong.Parse(split2[0]);
                 e.Server.GetUser(toMention).SendMessage("YOU HAVE BEEN SUMMONED BY THE DM");
+                turnOf = e.Server.GetUser(toMention).Nickname;
+                Console.WriteLine("playing:{0}",turnOf);
+                
             }
         }
 
     }
-
-
 
     static void Main() //Main Program
     {
@@ -378,14 +381,38 @@ class Program
         charSheet.Save(charSheetlocation);
 
 
+        DiscordClient bot = new DiscordClient();
 
-        var bot = new Discord.DiscordClient(); 
+
         bot.MessageReceived += bot_MessageReceived;
+        
         bot.ExecuteAndWait(async () =>
         {
             await bot.Connect("Mjc5MjkwNjgzMjY4MDA1ODg4.C4DXPg.31L5sU0R9yxYRWjDU0UQ8vE_1zQ", TokenType.Bot);
 
+            string checker = " ";
+            while (true)
+            {
+                while (checker != turnOf)
+                {
+
+                    try
+                    {
+                        bot.SetGame(new Game(turnOf));
+
+                    }
+                    catch
+                    {
+                        Console.WriteLine("try again");
+                        break;
+                    }
+                    Console.WriteLine("succeed");
+                    checker = turnOf;
+                }
+
+            }
         });
+
     }
 
 
